@@ -17,52 +17,51 @@ namespace TL_Installer_Prototype
             ///
             /// Declaring common string variables
             ///
-            string label_processComplete = "\n~~~~~~~~~~~~~~~~~~~~> Done!",
-                label_pressAnyKey = "\n~~~~~~~~~~~~~~~~~~~~> Press any key to exit",
-                label_extractPleaseWait = "\n~~~~~~~~~~~~~~~~~~~~> Extracting files - please wait...",
-                label_downloadingFiles = "\n~~~~~~~~~~~~~~~~~~~~> Downloading required files! Please wait.",
-                label_pathNotFound = "\n~~~~~~~~~~~~~~~~~~~~> This is an invalid path (or provided path was not found) - Please try again";
+            string label_processComplete = "\n~~~~~~~~~~~~~~~~~~~~> Done!";
+            string label_pressAnyKey = "\n~~~~~~~~~~~~~~~~~~~~> Press any key to exit";
+            string label_extractPleaseWait = "\n~~~~~~~~~~~~~~~~~~~~> Extracting files - please wait...";
+            string label_downloadingFiles = "\n~~~~~~~~~~~~~~~~~~~~> Downloading required files! Please wait.";
+            string label_pathNotFound = "\n~~~~~~~~~~~~~~~~~~~~> This is an invalid path (or provided path was not found) - Please try again";
 
             ///
             /// Declaring Menu Operation Variables
             ///
-            string operation,
-                InstallDir,
-                customInstallDir,
-                operationMenuInstall;
+            string operation;
+            string InstallDir;
+            string customInstallDir;
+            string operationMenuInstall;
 
             ///
             /// Declaring Manual Download File Paths
             ///
             // (nwJsPath) This seems to be declared - but it's never used [Warn list]
-            string fpps4Path,
-                temmiePath,
-                temmie_mainPath;
+            string fpps4Path;
+            string temmiePath;
+            string temmie_mainPath;
 
             ///
             /// Declaring Bools
             ///
-            bool instSoF = false,
-                checkForTL,
-                checkForNw,
-                checkForFp,
-                checkForTL_Main;
+            bool instSoF = false;
+            bool checkForTL;
+            bool checkForNw;
+            bool checkForFp;
+            bool checkForTL_Main;
 
             ///
             /// Declaring Enviorment Paths
             ///
-            string TLFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer"),
-                tempDownloadFolder = Path.Combine(TLFolder, "tempDownload"),
-                downloadFolderInstallDir = Path.Combine(Path.Combine(System.Environment.GetEnvironmentVariable("USERPROFILE"), "Downloads"), "Temmie Launcher");
+            string TLFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer");
+            string tempDownloadFolder = Path.Combine(TLFolder, "tempDownload");
+            string downloadFolderInstallDir = Path.Combine(Path.Combine(System.Environment.GetEnvironmentVariable("USERPROFILE"), "Downloads"), "Temmie Launcher");
 
             ///
             ///  Declaring Files with Extensions(zip)
             ///
-
-            string tLFileNameWIthExtension,
-                fpps4FileNameWIthExtension,
-                tL_Main_FileNameWIthExtension,
-                nwjs_FileNameWithExtension = Path.GetFileName(Path.Combine(tempDownloadFolder,"nwjs.zip"));
+            string tLFileNameWIthExtension;
+            string fpps4FileNameWIthExtension;
+            string tL_Main_FileNameWIthExtension;
+            string nwjs_FileNameWithExtension = Path.GetFileName(Path.Combine(tempDownloadFolder,"nwjs.zip"));
 
             ///
             /// Declaring References to classes
@@ -80,14 +79,13 @@ namespace TL_Installer_Prototype
             
 
                          /////////Declaring fpPS4 Action Variables//////////
-            string latestArtifactSha, GToken = "";
+            string GToken = "";
+            string latestArtifactSha = artifactJson.getLatestArtifactSha(GToken,endpointArtifactJson);
             Uri endpointArtifactJson = new Uri("https://api.github.com/repos/red-prig/fpPS4/actions/artifacts");
-            latestArtifactSha = artifactJson.getLatestArtifactSha(GToken,endpointArtifactJson);
 
             ///
             /// Creating TL_Installer Custom Folder
             ///
-
             if (!Directory.Exists(TLFolder))
             {
                 DirectoryInfo di = Directory.CreateDirectory(TLFolder);
