@@ -15,7 +15,7 @@ namespace TL_Installer_Prototype
             ////////////////Declaring Variables//////////////////////////
             
             ///
-            /// Declaring labels
+            /// Declaring common string variables
             ///
             string label_processComplete = "\n~~~~~~~~~~~~~~~~~~~~> Done!",
                 label_pressAnyKey = "\n~~~~~~~~~~~~~~~~~~~~> Press any key to exit",
