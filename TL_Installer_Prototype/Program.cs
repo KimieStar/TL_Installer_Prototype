@@ -16,21 +16,29 @@ namespace TL_Installer_Prototype
             ////////////////Declaring Variables//////////////////////////
             
             ///
+            /// Declaring common string variables
+            ///
+            string label_processComplete = "\n~~~~~~~~~~~~~~~~~~~~> Done!";
+            string label_pressAnyKey = "\n~~~~~~~~~~~~~~~~~~~~> Press any key to exit";
+            string label_extractPleaseWait = "\n~~~~~~~~~~~~~~~~~~~~> Extracting files - please wait...";
+            string label_downloadingFiles = "\n~~~~~~~~~~~~~~~~~~~~> Downloading required files! Please wait.";
+            string label_pathNotFound = "\n~~~~~~~~~~~~~~~~~~~~> This is an invalid path (or provided path was not found) - Please try again";
+
+            ///
             /// Declaring Menu Operation Variables
             ///
             string operation;
-            string operationMenuInstall;
             string InstallDir;
             string customInstallDir;
+            string operationMenuInstall;
 
             ///
             /// Declaring Manual Download File Paths
             ///
-
+            // (nwJsPath) This seems to be declared - but it's never used [Warn list]
+            string fpps4Path;
             string temmiePath;
             string temmie_mainPath;
-            string nwJsPath;
-            string fpps4Path;
 
             ///
             /// Declaring Bools
@@ -51,7 +59,6 @@ namespace TL_Installer_Prototype
             ///
             ///  Declaring Files with Extensions(zip)
             ///
-
             string tLFileNameWIthExtension;
             string fpps4FileNameWIthExtension;
             string tL_Main_FileNameWIthExtension;
@@ -61,15 +68,15 @@ namespace TL_Installer_Prototype
             /// Declaring References to classes
             ///
 
-            Extract_Files extractor = new Extract_Files();
-            File_Folder_Mover mover = new File_Folder_Mover();
             Logos logos = new Logos();
+            Extract_Files extractor = new Extract_Files();
+            TL_Downloader tlDownloader = new TL_Downloader();
+            File_Folder_Mover mover = new File_Folder_Mover();
+            NwJs_Downloader nwjsDownloader = new NwJs_Downloader();
+            File_Folder_Deleter deleter = new File_Folder_Deleter();
             fpPS4_Artifact_Json artifactJson = new fpPS4_Artifact_Json();
             fpPS4_Action_Downloader actionDownloader = new fpPS4_Action_Downloader();
-            NwJs_Downloader nwjsDownloader = new NwJs_Downloader();
-            TL_Downloader tlDownloader = new TL_Downloader();
             Write_To_Temmie_Config_Json writeTemmieConfig = new Write_To_Temmie_Config_Json();
-            File_Folder_Deleter deleter = new File_Folder_Deleter();
             
 
                          /////////Declaring fpPS4 Action Variables//////////
@@ -80,7 +87,6 @@ namespace TL_Installer_Prototype
             ///
             /// Creating TL_Installer Custom Folder
             ///
-
             if (!Directory.Exists(TLFolder))
             {
                 DirectoryInfo di = Directory.CreateDirectory(TLFolder);
@@ -100,7 +106,6 @@ namespace TL_Installer_Prototype
                 if (operation == "1")
                 {
                     Console.Clear();
-                    
 
                     while (true)
                     {
@@ -117,7 +122,7 @@ namespace TL_Installer_Prototype
                             {
                                 Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Downloading fpPS4! Please wait.");
                                 actionDownloader.downloadLatestAction(GToken);
-                                Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                                Console.WriteLine(label_processComplete);
                                 checkForFp = true;
                             }
                             else if (File.Exists(Path.Combine(tempDownloadFolder, "fpPS4.zip")))
@@ -129,15 +134,15 @@ namespace TL_Installer_Prototype
                             {
                                 checkForFp = false;
                             }
-                            Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Extracting! Please wait.");
+                            Console.WriteLine(label_extractPleaseWait);
                             extractor.ExtractZipContent(Path.Combine(tempDownloadFolder,"fpPS4.zip"),Path.Combine(tempDownloadFolder,"fpPS4"));
-                            Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                            Console.WriteLine(label_processComplete);
                             checkForFp = true;
                             if (!File.Exists(Path.Combine(tempDownloadFolder, "nwjs.zip")))
                             {
                                 Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Downloading Nw.js! Please wait.");
                                 nwjsDownloader.nwJsDownload();
-                                Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                                Console.WriteLine(label_processComplete);
                                 checkForNw = true;
                             }
                             else if (File.Exists(Path.Combine(tempDownloadFolder, "nwjs.zip")))
@@ -149,15 +154,15 @@ namespace TL_Installer_Prototype
                             {
                                 checkForNw = false;
                             }
-                            Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Extracting! Please wait.");
+                            Console.WriteLine(label_extractPleaseWait);
                             extractor.ExtractZipContent(Path.Combine(tempDownloadFolder, "nwjs.zip"), Path.Combine(tempDownloadFolder, "nwjs"));
-                            Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                            Console.WriteLine(label_processComplete);
                             checkForNw = true;
                             if (!File.Exists(Path.Combine(tempDownloadFolder, "Launcher.zip")))
                             {
                                 Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Downloading Launcher! Please wait.");
                                 tlDownloader.downloadLatestRelease(GToken);
-                                Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                                Console.WriteLine(label_processComplete);
                                 checkForTL = true;
                             }
                             else if (File.Exists(Path.Combine(tempDownloadFolder, "Launcher.zip")))
@@ -169,14 +174,14 @@ namespace TL_Installer_Prototype
                             {
                                 checkForTL = false;
                             }
-                            Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Extracting! Please wait.");
+                            Console.WriteLine(label_extractPleaseWait);
                             extractor.ExtractZipContent(Path.Combine(tempDownloadFolder, "Launcher.zip"), Path.Combine(tempDownloadFolder, "Launcher"));
-                            Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                            Console.WriteLine(label_processComplete);
                             if (!File.Exists(Path.Combine(tempDownloadFolder, "fpPS4-Temmie-s-Launcher-main.zip")))
                             {
                                 Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Downloading fpPS4-Temmie-s-Launcher-main! Please wait.");
                                 tlDownloader.downloadFromMain();
-                                Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                                Console.WriteLine(label_processComplete);
                                 checkForTL_Main = true;
                             }
                             else if (File.Exists(Path.Combine(tempDownloadFolder, "fpPS4-Temmie-s-Launcher-main.zip")))
@@ -188,9 +193,9 @@ namespace TL_Installer_Prototype
                             {
                                 checkForTL_Main = false;
                             }
-                            Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Extracting! Please wait.");
+                            Console.WriteLine(label_extractPleaseWait);
                             extractor.ExtractZipContent(Path.Combine(tempDownloadFolder, "fpPS4-Temmie-s-Launcher-main.zip"), Path.Combine(tempDownloadFolder, "fpPS4-Temmie-s-Launcher-main"));
-                            Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                            Console.WriteLine(label_processComplete);
 
                             logos.Logo4();
                             /// Checks if the needed files exist
@@ -217,7 +222,7 @@ namespace TL_Installer_Prototype
                                     }
                                     else
                                     {
-                                        Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Invalid expression!");
+                                        Console.WriteLine(label_pathNotFound);
                                     }
                                 }
 
@@ -489,7 +494,7 @@ namespace TL_Installer_Prototype
                             {
 
                                 Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Installation finished successfully!");
-                                Console.Write("\n~~~~~~~~~~~~~~~~~~~~> Press any key to Exit");
+                                Console.Write(label_pressAnyKey);
                                 Console.ReadKey();
                                 Console.Clear();
                                 break;
@@ -497,7 +502,7 @@ namespace TL_Installer_Prototype
                             else
                             {
                                 Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Installation Canceled");
-                                Console.Write("\n~~~~~~~~~~~~~~~~~~~~> Press any key to Exit");
+                                Console.Write(label_pressAnyKey);
                                 Console.ReadKey();
                                 Console.Clear();
                                 break;
@@ -621,7 +626,7 @@ namespace TL_Installer_Prototype
                                     }
                                     else
                                     {
-                                        Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Invalid expression!");
+                                        Console.WriteLine(label_pathNotFound);
                                     }
                                 }
 
@@ -647,9 +652,9 @@ namespace TL_Installer_Prototype
                                         }
                                         else
                                         {
-                                            Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Downloading required files! Please wait.");
+                                            Console.WriteLine(label_downloadingFiles);
                                             nwjsDownloader.nwJsDownload();
-                                            Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                                            Console.WriteLine(label_processComplete);
                                         }
                                         
                                         Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting! {nwjs_FileNameWithExtension}");
@@ -657,20 +662,20 @@ namespace TL_Installer_Prototype
                                         mover.Move_Files_And_Folders(Path.Combine(tempDownloadFolder, "nwjs", "nwjs-v0.70.1-win-x64"), downloadFolderInstallDir);
                                         Directory.Delete(Path.Combine(tempDownloadFolder,"nwjs", "nwjs-v0.70.1-win-x64"));
                                         Directory.Delete(Path.Combine(tempDownloadFolder, "nwjs"));
-                                        Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                                        Console.WriteLine(label_processComplete);
 
                                         ///
                                         /// Extracting Temmie Launcher
                                         ///
                                         Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {tLFileNameWIthExtension}");
                                         extractor.ExtractZipContent(temmiePath, downloadFolderInstallDir);
-                                        Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                                        Console.WriteLine(label_processComplete);
 
                                         ///
                                         /// Extracting Temmie Launcher Main
                                         ///
                                         Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {tL_Main_FileNameWIthExtension}");
-                                        Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                                        Console.WriteLine(label_processComplete);
                                         extractor.ExtractZipContent(temmie_mainPath, downloadFolderInstallDir);
                                         Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Moving Files...");
                                         mover.Move_Files_And_Folders(Path.Combine(downloadFolderInstallDir,"fpPS4-Temmie-s-Launcher-main"), downloadFolderInstallDir);
@@ -682,7 +687,7 @@ namespace TL_Installer_Prototype
                                         ///
                                         Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {fpps4FileNameWIthExtension}");
                                         extractor.ExtractZipContent(fpps4Path, Path.Combine(downloadFolderInstallDir, "Emu"));
-                                        Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                                        Console.WriteLine(label_processComplete);
 
                                         ///
                                         /// Creating Games and Creating Settings.json
@@ -720,9 +725,9 @@ namespace TL_Installer_Prototype
                                                     }
                                                     else
                                                     {
-                                                        Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Downloading required files! Please wait.");
+                                                        Console.WriteLine(label_downloadingFiles);
                                                         nwjsDownloader.nwJsDownload();
-                                                        Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                                                        Console.WriteLine(label_processComplete);
                                                     }
                                                     ///
                                                     /// Extracting nwjs
@@ -732,14 +737,14 @@ namespace TL_Installer_Prototype
                                                     mover.Move_Files_And_Folders(Path.Combine(tempDownloadFolder, "nwjs", "nwjs-v0.70.1-win-x64"), downloadFolderInstallDir);
                                                     Directory.Delete(Path.Combine(tempDownloadFolder, "nwjs", "nwjs-v0.70.1-win-x64"));
                                                     Directory.Delete(Path.Combine(tempDownloadFolder, "nwjs"));
-                                                    Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                                                    Console.WriteLine(label_processComplete);
 
                                                     ///
                                                     /// Extracting Temmie Launcher
                                                     ///
                                                     Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {tLFileNameWIthExtension}");
                                                     extractor.ExtractZipContent(temmiePath, downloadFolderInstallDir);
-                                                    Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                                                    Console.WriteLine(label_processComplete);
 
                                                     ///
                                                     /// Extracting Temmie Launcher Main
@@ -747,7 +752,7 @@ namespace TL_Installer_Prototype
 
                                                     Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {tL_Main_FileNameWIthExtension}");
                                                     extractor.ExtractZipContent(temmie_mainPath, downloadFolderInstallDir);
-                                                    Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                                                    Console.WriteLine(label_processComplete);
                                                     Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Moving Files...");
                                                     mover.Move_Files_And_Folders(Path.Combine(downloadFolderInstallDir, "fpPS4-Temmie-s-Launcher-main"), downloadFolderInstallDir);
                                                     Directory.Delete(Path.Combine(downloadFolderInstallDir, "fpPS4-Temmie-s-Launcher-main"));
@@ -757,7 +762,7 @@ namespace TL_Installer_Prototype
                                                     ///
                                                     Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {fpps4FileNameWIthExtension}");
                                                     extractor.ExtractZipContent(fpps4Path, Path.Combine(downloadFolderInstallDir, "Emu"));
-                                                    Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                                                    Console.WriteLine(label_processComplete);
 
                                                     ///
                                                     /// Creating Games and Creating Settings.json
@@ -795,9 +800,9 @@ namespace TL_Installer_Prototype
                                             }
                                             else
                                             {
-                                                Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Downloading required files! Please wait.");
+                                                Console.WriteLine(label_downloadingFiles);
                                                 nwjsDownloader.nwJsDownload();
-                                                Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                                                Console.WriteLine(label_processComplete);
                                             }
                                             ///
                                             /// Extracing nwjs
@@ -807,21 +812,21 @@ namespace TL_Installer_Prototype
                                             mover.Move_Files_And_Folders(Path.Combine(tempDownloadFolder, "nwjs", "nwjs-v0.70.1-win-x64"), downloadFolderInstallDir);
                                             Directory.Delete(Path.Combine(tempDownloadFolder, "nwjs", "nwjs-v0.70.1-win-x64"));
                                             Directory.Delete(Path.Combine(tempDownloadFolder, "nwjs"));
-                                            Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                                            Console.WriteLine(label_processComplete);
 
                                             ///
                                             /// Extracting Temmie Launcher
                                             ///
                                             Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {tLFileNameWIthExtension}");
                                             extractor.ExtractZipContent(temmiePath, downloadFolderInstallDir);
-                                            Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                                            Console.WriteLine(label_processComplete);
 
                                             ///
                                             /// Extracting Temmie Launcher Main
                                             ///
                                             Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {tL_Main_FileNameWIthExtension}");
                                             extractor.ExtractZipContent(temmie_mainPath, downloadFolderInstallDir);
-                                            Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                                            Console.WriteLine(label_processComplete);
                                             Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Moving Files...");
                                             mover.Move_Files_And_Folders(Path.Combine(downloadFolderInstallDir, "fpPS4-Temmie-s-Launcher-main"), downloadFolderInstallDir);
                                             Directory.Delete(Path.Combine(downloadFolderInstallDir, "fpPS4-Temmie-s-Launcher-main"));
@@ -831,7 +836,7 @@ namespace TL_Installer_Prototype
                                             ///
                                             Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {fpps4FileNameWIthExtension}");
                                             extractor.ExtractZipContent(fpps4Path, Path.Combine(downloadFolderInstallDir, "Emu"));
-                                            Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                                            Console.WriteLine(label_processComplete);
 
                                             ///
                                             /// Creating Games and Creating Settings.json
@@ -869,9 +874,9 @@ namespace TL_Installer_Prototype
                                         }
                                         else
                                         {
-                                            Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Downloading required files! Please wait.");
+                                            Console.WriteLine(label_downloadingFiles);
                                             nwjsDownloader.nwJsDownload();
-                                            Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                                            Console.WriteLine(label_processComplete);
                                         }
 
                                         ///
@@ -882,14 +887,14 @@ namespace TL_Installer_Prototype
                                         mover.Move_Files_And_Folders(Path.Combine(tempDownloadFolder, "nwjs", "nwjs-v0.70.1-win-x64"), customInstallDir);
                                         Directory.Delete(Path.Combine(tempDownloadFolder, "nwjs", "nwjs-v0.70.1-win-x64"));
                                         Directory.Delete(Path.Combine(tempDownloadFolder, "nwjs"));
-                                        Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                                        Console.WriteLine(label_processComplete);
 
                                         ///
                                         /// Extracting Temmie Launcher
                                         ///
                                         Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {tLFileNameWIthExtension}");
                                         extractor.ExtractZipContent(temmiePath, customInstallDir);
-                                        Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                                        Console.WriteLine(label_processComplete);
 
                                         ///
                                         /// Extracting Temmie Launcher Main
@@ -897,7 +902,7 @@ namespace TL_Installer_Prototype
 
                                         Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {tL_Main_FileNameWIthExtension}");
                                         extractor.ExtractZipContent(temmie_mainPath, customInstallDir);
-                                        Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                                        Console.WriteLine(label_processComplete);
                                         Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Moving Files...");
                                         mover.Move_Files_And_Folders(Path.Combine(customInstallDir, "fpPS4-Temmie-s-Launcher-main"), customInstallDir);
                                         Directory.Delete(Path.Combine(customInstallDir, "fpPS4-Temmie-s-Launcher-main"));
@@ -907,7 +912,7 @@ namespace TL_Installer_Prototype
                                         ///
                                         Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {fpps4FileNameWIthExtension}");
                                         extractor.ExtractZipContent(fpps4Path, Path.Combine(customInstallDir, "Emu"));
-                                        Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                                        Console.WriteLine(label_processComplete);
 
                                         ///
                                         /// Creating Games and Creating Settings.json
@@ -945,9 +950,9 @@ namespace TL_Installer_Prototype
                                                     }
                                                     else
                                                     {
-                                                        Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Downloading required files! Please wait.");
+                                                        Console.WriteLine(label_downloadingFiles);
                                                         nwjsDownloader.nwJsDownload();
-                                                        Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                                                        Console.WriteLine(label_processComplete);
                                                     }
 
                                                     ///
@@ -958,21 +963,21 @@ namespace TL_Installer_Prototype
                                                     mover.Move_Files_And_Folders(Path.Combine(tempDownloadFolder, "nwjs", "nwjs-v0.70.1-win-x64"), customInstallDir);
                                                     Directory.Delete(Path.Combine(tempDownloadFolder, "nwjs", "nwjs-v0.70.1-win-x64"));
                                                     Directory.Delete(Path.Combine(tempDownloadFolder, "nwjs"));
-                                                    Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                                                    Console.WriteLine(label_processComplete);
 
                                                     ///
                                                     /// Extracting Temmie Launcher
                                                     ///
                                                     Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {tLFileNameWIthExtension}");
                                                     extractor.ExtractZipContent(temmiePath, customInstallDir);
-                                                    Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                                                    Console.WriteLine(label_processComplete);
 
                                                     ///
                                                     /// Extracting Temmie Launcher Main
                                                     ///
                                                     Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {tL_Main_FileNameWIthExtension}");
                                                     extractor.ExtractZipContent(temmie_mainPath, customInstallDir);
-                                                    Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                                                    Console.WriteLine(label_processComplete);
                                                     Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Moving Files...");
                                                     mover.Move_Files_And_Folders(Path.Combine(customInstallDir, "fpPS4-Temmie-s-Launcher-main"), customInstallDir);
                                                     Directory.Delete(Path.Combine(customInstallDir, "fpPS4-Temmie-s-Launcher-main"));
@@ -982,7 +987,7 @@ namespace TL_Installer_Prototype
                                                     ///
                                                     Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {fpps4FileNameWIthExtension}");
                                                     extractor.ExtractZipContent(fpps4Path, Path.Combine(customInstallDir, "Emu"));
-                                                    Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                                                    Console.WriteLine(label_processComplete);
 
                                                     ///
                                                     /// Creating Games Folder and Creating Settings.json
@@ -1019,9 +1024,9 @@ namespace TL_Installer_Prototype
                                             }
                                             else
                                             {
-                                                Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Downloading required files! Please wait.");
+                                                Console.WriteLine(label_downloadingFiles);
                                                 nwjsDownloader.nwJsDownload();
-                                                Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                                                Console.WriteLine(label_processComplete);
                                             }
 
                                             ///
@@ -1032,14 +1037,14 @@ namespace TL_Installer_Prototype
                                             mover.Move_Files_And_Folders(Path.Combine(tempDownloadFolder, "nwjs", "nwjs-v0.70.1-win-x64"), customInstallDir);
                                             Directory.Delete(Path.Combine(tempDownloadFolder, "nwjs", "nwjs-v0.70.1-win-x64"));
                                             Directory.Delete(Path.Combine(tempDownloadFolder, "nwjs"));
-                                            Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                                            Console.WriteLine(label_processComplete);
 
                                             ///
                                             /// Extracting Temmie Launcher
                                             ///
                                             Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {tLFileNameWIthExtension}");
                                             extractor.ExtractZipContent(temmiePath, customInstallDir);
-                                            Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                                            Console.WriteLine(label_processComplete);
 
                                             ///
                                             /// Extracting Temmie Launcher Main
@@ -1047,7 +1052,7 @@ namespace TL_Installer_Prototype
 
                                             Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {tL_Main_FileNameWIthExtension}");
                                             extractor.ExtractZipContent(temmie_mainPath, customInstallDir);
-                                            Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                                            Console.WriteLine(label_processComplete);
                                             Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Moving Files...");
                                             mover.Move_Files_And_Folders(Path.Combine(customInstallDir, "fpPS4-Temmie-s-Launcher-main"), customInstallDir);
                                             Directory.Delete(Path.Combine(customInstallDir, "fpPS4-Temmie-s-Launcher-main"));
@@ -1057,7 +1062,7 @@ namespace TL_Installer_Prototype
                                             ///
                                             Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {fpps4FileNameWIthExtension}");
                                             extractor.ExtractZipContent(fpps4Path, Path.Combine(customInstallDir, "Emu"));
-                                            Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Done!");
+                                            Console.WriteLine(label_processComplete);
 
                                             ///
                                             /// Creating Games Folder and Creating Settings.json
@@ -1082,7 +1087,7 @@ namespace TL_Installer_Prototype
                             if (instSoF == true)
                             {
                                 Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Installation finished successfully!");
-                                Console.Write("\n~~~~~~~~~~~~~~~~~~~~> Press any key to Exit");
+                                Console.Write(label_pressAnyKey);
                                 Console.ReadKey();
                                 Console.Clear();
                                 break;
@@ -1090,7 +1095,7 @@ namespace TL_Installer_Prototype
                             else
                             {
                                 Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Installation Canceled!");
-                                Console.Write("\n~~~~~~~~~~~~~~~~~~~~> Press any key to Exit");
+                                Console.Write(label_pressAnyKey);
                                 Console.ReadKey();
                                 Console.Clear();
                                 break;
