@@ -11,11 +11,11 @@ A Temmie Launcher and fpPS4 installer in one made just for the funzies
 ## Installation
 
 ### Automatic
-- After you choose 'Automatic Installation' wait for the app to do it's stuff (download the required files) after that the you will be prompted to choose where to install. You can choose either to enter nothing and just continue which will install everything in the Downloads folder. Or by choosing a path where to install it everything will be installed in the specified folder.
+- After you choose 'Automatic Installation' wait for the app to do it's stuff (download the required files) after that the you will be prompted to choose where to install. You can choose either to enter nothing and just continue which will install everything in the Downloads folder. Or by choosing a path where to install it everything will be installed in the specified folder. Example of how the path should look like `"C:\Users\<Your Username>\Downloads\"`.
 
 ### Manual
 - After you choose 'Manual Installation' you will be required to enter the path of every single file that is required. Example of how the path should look like `"C:\Users\<Your Username>\Downloads\fpPS4.zip"`.
-- After all the file paths are entered and the app has verified the files you will be prompted to choose choose where to install. You can choose either to enter nothing and just continue which will install everything in the Downloads folder. Or by choosing a path where to install it everything will be installed in the specified folder.
+- After all the file paths are entered and the app has verified the files you will be prompted to choose choose where to install. You can choose either to enter nothing and just continue which will install everything in the Downloads folder. Or by choosing a path where to install it everything will be installed in the specified folder. Example of how the path should look like `"C:\Users\<Your Username>\Downloads\"`.
 
 #### P.S.
 You can find the files required for manual installation over here:
@@ -25,3 +25,8 @@ You can find the files required for manual installation over here:
 
 ## Update
 - This operation is not yet implemented. Coming soon!
+
+# Warning
+- If the app is not starting you may need to install <a href="https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-6.0.13-windows-x64-installer">.Net 6 Runtime</a>.
+
+- For further support head over to the <a href="https://discord.com/invite/up9qatpX7M">discord server of fpPS4</a>.
