@@ -12,6 +12,7 @@ namespace TL_Installer_Prototype
     {
         static void Main(string[] args)
         {
+            Console.Title = ("TL Installer");
             ////////////////Declaring Variables//////////////////////////
             
             ///
@@ -73,8 +74,8 @@ namespace TL_Installer_Prototype
 
                          /////////Declaring fpPS4 Action Variables//////////
             string GToken = "";
-            Uri endpointArtifactJson = new Uri("https://api.github.com/repos/red-prig/fpPS4/actions/artifacts");
-            string latestArtifactSha = artifactJson.getLatestArtifactSha(GToken,endpointArtifactJson);
+            
+            string latestArtifactSha = artifactJson.getLatestArtifactSha(GToken);
 
             ///
             /// Creating TL_Installer Custom Folder

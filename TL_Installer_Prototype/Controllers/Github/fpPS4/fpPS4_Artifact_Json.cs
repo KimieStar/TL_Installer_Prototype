@@ -40,13 +40,14 @@ namespace TL_Installer_Prototype.Controllers.Github.fpPS4
     }
     public class fpPS4_Artifact_Json
     {
-        public Root getJsonAndParse(string GToken, Uri endpoint)
+        public Root getJsonAndParse(string GToken)
         {
             using (var client = new HttpClient())
             {
+                Uri endpointArtifactJson = new Uri("https://api.github.com/repos/red-prig/fpPS4/actions/artifacts");
                 client.DefaultRequestHeaders.Add("Authorization", $"Bearer {GToken}");
                 client.DefaultRequestHeaders.Add("User-Agent", "Kimie");
-                var responseMsg = client.GetAsync(endpoint).Result;
+                var responseMsg = client.GetAsync(endpointArtifactJson).Result;
                 string responseBody = responseMsg.Content.ReadAsStringAsync().Result;
                 Root artifactsJson = JsonConvert.DeserializeObject<Root>(responseBody);
                 return artifactsJson;
@@ -56,7 +57,7 @@ namespace TL_Installer_Prototype.Controllers.Github.fpPS4
 
         public int getLatestTrunkArtifactID(string GToken, Uri endpoint)
         {
-            Root artifactsJson = getJsonAndParse(GToken, endpoint);
+            Root artifactsJson = getJsonAndParse(GToken);
             int i = 0;
             while (true)
             {
@@ -72,16 +73,30 @@ namespace TL_Installer_Prototype.Controllers.Github.fpPS4
             return latestArtifactID;
         }
 
-        public int getLatestArtifactID(string GToken, Uri endpoint)
+        public string getLatestArtifactID(string GToken)
         {
-            Root artifactsJson = getJsonAndParse(GToken, endpoint);
-            int latestArtifactID = artifactsJson.artifacts[0].id;
+            Uri endpoint = new Uri("https://api.github.com/repos/red-prig/fpPS4/actions/artifacts");
+            Root artifactsJson = getJsonAndParse(GToken);
+            fpPS4_Check_Main_Workflow cr = new fpPS4_Check_Main_Workflow();
+            int i = 0;
+
+            while (true)
+            {
+                bool isLatestArtifactFromMain = cr.isArtifactFromMainWorkflow(GToken, i);
+                if (isLatestArtifactFromMain == true)
+                {
+                    break;
+                }
+                i++;
+            }
+
+            string latestArtifactID = artifactsJson.artifacts[i].id.ToString();
             return latestArtifactID;
         }
 
-        public string getLatestArtifactSha(string GToken, Uri endpoint)
+        public string getLatestArtifactSha(string GToken)
         {
-            Root artifactsJson = getJsonAndParse(GToken, endpoint);
+            Root artifactsJson = getJsonAndParse(GToken);
             int i = 0;
             while (true)
             {
@@ -94,6 +109,13 @@ namespace TL_Installer_Prototype.Controllers.Github.fpPS4
             }
 
             string latestArtifactID = artifactsJson.artifacts[i].workflow_run.head_sha;
+            return latestArtifactID;
+        }
+
+        public string getLatestArtifactWorkflowID(string GToken, int i)
+        {
+            Root artifactsJson = getJsonAndParse(GToken);
+            string latestArtifactID = artifactsJson.artifacts[i].workflow_run.id.ToString();
             return latestArtifactID;
         }
     }
