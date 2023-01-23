@@ -35,7 +35,6 @@ namespace TL_Installer_Prototype
             ///
             /// Declaring Manual Download File Paths
             ///
-            // (nwJsPath) This seems to be declared - but it's never used [Warn list]
             string fpps4Path;
             string temmiePath;
             string temmie_mainPath;
@@ -45,7 +44,6 @@ namespace TL_Installer_Prototype
             ///
             bool instSoF = false;
             bool checkForTL;
-            bool checkForNw;
             bool checkForFp;
             bool checkForTL_Main;
 
@@ -62,7 +60,6 @@ namespace TL_Installer_Prototype
             string tLFileNameWIthExtension;
             string fpps4FileNameWIthExtension;
             string tL_Main_FileNameWIthExtension;
-            string nwjs_FileNameWithExtension = Path.GetFileName(Path.Combine(tempDownloadFolder,"nwjs.zip"));
 
             ///
             /// Declaring References to classes
@@ -72,7 +69,6 @@ namespace TL_Installer_Prototype
             Extract_Files extractor = new Extract_Files();
             TL_Downloader tlDownloader = new TL_Downloader();
             File_Folder_Mover mover = new File_Folder_Mover();
-            NwJs_Downloader nwjsDownloader = new NwJs_Downloader();
             File_Folder_Deleter deleter = new File_Folder_Deleter();
             fpPS4_Artifact_Json artifactJson = new fpPS4_Artifact_Json();
             fpPS4_Action_Downloader actionDownloader = new fpPS4_Action_Downloader();
@@ -138,26 +134,6 @@ namespace TL_Installer_Prototype
                             extractor.ExtractZipContent(Path.Combine(tempDownloadFolder,"fpPS4.zip"),Path.Combine(tempDownloadFolder,"fpPS4"));
                             Console.WriteLine(label_processComplete);
                             checkForFp = true;
-                            if (!File.Exists(Path.Combine(tempDownloadFolder, "nwjs.zip")))
-                            {
-                                Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Downloading Nw.js! Please wait.");
-                                nwjsDownloader.nwJsDownload();
-                                Console.WriteLine(label_processComplete);
-                                checkForNw = true;
-                            }
-                            else if (File.Exists(Path.Combine(tempDownloadFolder, "nwjs.zip")))
-                            {
-                                Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Nw.js is already downloaded.");
-                                checkForNw = true;
-                            }
-                            else
-                            {
-                                checkForNw = false;
-                            }
-                            Console.WriteLine(label_extractPleaseWait);
-                            extractor.ExtractZipContent(Path.Combine(tempDownloadFolder, "nwjs.zip"), Path.Combine(tempDownloadFolder, "nwjs"));
-                            Console.WriteLine(label_processComplete);
-                            checkForNw = true;
                             if (!File.Exists(Path.Combine(tempDownloadFolder, "Launcher.zip")))
                             {
                                 Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Downloading Launcher! Please wait.");
@@ -201,7 +177,7 @@ namespace TL_Installer_Prototype
                             /// Checks if the needed files exist
                             /// Getting Installation Directory
                             /// Installation
-                            if (checkForFp == true && checkForNw == true && checkForTL == true && checkForTL_Main == true)
+                            if (checkForFp == true && checkForTL == true && checkForTL_Main == true)
                             {
                                 
 
@@ -244,9 +220,6 @@ namespace TL_Installer_Prototype
                                         /// Creating/Deleting Directories and Moving files to their appropriate folders 
                                         ///
                                         Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Moving Files...");
-                                        mover.Move_Files_And_Folders(Path.Combine(tempDownloadFolder,"nwjs", "nwjs-v0.70.1-win-x64"), downloadFolderInstallDir);
-                                        Directory.Delete(Path.Combine(tempDownloadFolder, "nwjs", "nwjs-v0.70.1-win-x64"));
-                                        Directory.Delete(Path.Combine(tempDownloadFolder, "nwjs"));
                                         mover.Move_Files_And_Folders(Path.Combine(tempDownloadFolder, "Launcher"),downloadFolderInstallDir);
                                         Directory.Delete(Path.Combine(tempDownloadFolder, "Launcher"));
                                         mover.Move_Files_And_Folders(Path.Combine(tempDownloadFolder, "fpPS4-Temmie-s-Launcher-main", "fpPS4-Temmie-s-Launcher-main"), downloadFolderInstallDir);
@@ -286,9 +259,6 @@ namespace TL_Installer_Prototype
                                                     deleter.Delete_Files_And_Folders(downloadFolderInstallDir);
 
                                                     Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Moving Files...");
-                                                    mover.Move_Files_And_Folders(Path.Combine(tempDownloadFolder, "nwjs", "nwjs-v0.70.1-win-x64"), downloadFolderInstallDir);
-                                                    Directory.Delete(Path.Combine(tempDownloadFolder, "nwjs", "nwjs-v0.70.1-win-x64"));
-                                                    Directory.Delete(Path.Combine(tempDownloadFolder, "nwjs"));
                                                     mover.Move_Files_And_Folders(Path.Combine(tempDownloadFolder, "Launcher"), downloadFolderInstallDir);
                                                     Directory.Delete(Path.Combine(tempDownloadFolder, "Launcher"));
                                                     mover.Move_Files_And_Folders(Path.Combine(tempDownloadFolder, "fpPS4-Temmie-s-Launcher-main", "fpPS4-Temmie-s-Launcher-main"), downloadFolderInstallDir);
@@ -330,9 +300,6 @@ namespace TL_Installer_Prototype
                                             Directory.CreateDirectory(downloadFolderInstallDir);
 
                                             Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Moving Files...");
-                                            mover.Move_Files_And_Folders(Path.Combine(tempDownloadFolder, "nwjs", "nwjs-v0.70.1-win-x64"), downloadFolderInstallDir);
-                                            Directory.Delete(Path.Combine(tempDownloadFolder, "nwjs", "nwjs-v0.70.1-win-x64"));
-                                            Directory.Delete(Path.Combine(tempDownloadFolder, "nwjs"));
                                             mover.Move_Files_And_Folders(Path.Combine(tempDownloadFolder, "Launcher"), downloadFolderInstallDir);
                                             Directory.Delete(Path.Combine(tempDownloadFolder, "Launcher"));
                                             mover.Move_Files_And_Folders(Path.Combine(tempDownloadFolder, "fpPS4-Temmie-s-Launcher-main", "fpPS4-Temmie-s-Launcher-main"), downloadFolderInstallDir);
@@ -372,9 +339,6 @@ namespace TL_Installer_Prototype
                                         Directory.CreateDirectory(customInstallDir);
 
                                         Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Moving Files...");
-                                        mover.Move_Files_And_Folders(Path.Combine(tempDownloadFolder, "nwjs", "nwjs-v0.70.1-win-x64"), customInstallDir);
-                                        Directory.Delete(Path.Combine(tempDownloadFolder, "nwjs", "nwjs-v0.70.1-win-x64"));
-                                        Directory.Delete(Path.Combine(tempDownloadFolder, "nwjs"));
                                         mover.Move_Files_And_Folders(Path.Combine(tempDownloadFolder, "Launcher"), customInstallDir);
                                         Directory.Delete(Path.Combine(tempDownloadFolder, "Launcher"));
                                         mover.Move_Files_And_Folders(Path.Combine(tempDownloadFolder, "fpPS4-Temmie-s-Launcher-main", "fpPS4-Temmie-s-Launcher-main"),  customInstallDir);
@@ -414,9 +378,6 @@ namespace TL_Installer_Prototype
                                                     Directory.CreateDirectory(customInstallDir);
 
                                                     Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Moving Files...");
-                                                    mover.Move_Files_And_Folders(Path.Combine(tempDownloadFolder, "nwjs", "nwjs-v0.70.1-win-x64"), customInstallDir);
-                                                    Directory.Delete(Path.Combine(tempDownloadFolder, "nwjs", "nwjs-v0.70.1-win-x64"));
-                                                    Directory.Delete(Path.Combine(tempDownloadFolder, "nwjs"));
                                                     mover.Move_Files_And_Folders(Path.Combine(tempDownloadFolder, "Launcher"), customInstallDir);
                                                     Directory.Delete(Path.Combine(tempDownloadFolder, "Launcher"));
                                                     mover.Move_Files_And_Folders(Path.Combine(tempDownloadFolder, "fpPS4-Temmie-s-Launcher-main", "fpPS4-Temmie-s-Launcher-main"), customInstallDir);
@@ -458,9 +419,6 @@ namespace TL_Installer_Prototype
                                             Directory.CreateDirectory(downloadFolderInstallDir);
 
                                             Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Moving Files...");
-                                            mover.Move_Files_And_Folders(Path.Combine(tempDownloadFolder, "nwjs", "nwjs-v0.70.1-win-x64"), customInstallDir);
-                                            Directory.Delete(Path.Combine(tempDownloadFolder, "nwjs", "nwjs-v0.70.1-win-x64"));
-                                            Directory.Delete(Path.Combine(tempDownloadFolder, "nwjs"));
                                             mover.Move_Files_And_Folders(Path.Combine(tempDownloadFolder, "Launcher"), customInstallDir);
                                             Directory.Delete(Path.Combine(tempDownloadFolder, "Launcher"));
                                             mover.Move_Files_And_Folders(Path.Combine(tempDownloadFolder, "fpPS4-Temmie-s-Launcher-main", "fpPS4-Temmie-s-Launcher-main"), customInstallDir);
@@ -642,28 +600,7 @@ namespace TL_Installer_Prototype
                                     if (!Directory.Exists(downloadFolderInstallDir))
                                     {
                                         Directory.CreateDirectory(downloadFolderInstallDir);
-
-                                        ///
-                                        /// Checking if nwjs.zip exists and if not it downloads
-                                        ///
-                                        if (File.Exists(Path.Combine(tempDownloadFolder, "nwjs.zip")))
-                                        {
-                                            Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Nw.js already downloaded. Proceeding...");
-                                        }
-                                        else
-                                        {
-                                            Console.WriteLine(label_downloadingFiles);
-                                            nwjsDownloader.nwJsDownload();
-                                            Console.WriteLine(label_processComplete);
-                                        }
                                         
-                                        Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting! {nwjs_FileNameWithExtension}");
-                                        extractor.ExtractZipContent(Path.Combine(tempDownloadFolder, "nwjs.zip"), Path.Combine(tempDownloadFolder, "nwjs"));
-                                        mover.Move_Files_And_Folders(Path.Combine(tempDownloadFolder, "nwjs", "nwjs-v0.70.1-win-x64"), downloadFolderInstallDir);
-                                        Directory.Delete(Path.Combine(tempDownloadFolder,"nwjs", "nwjs-v0.70.1-win-x64"));
-                                        Directory.Delete(Path.Combine(tempDownloadFolder, "nwjs"));
-                                        Console.WriteLine(label_processComplete);
-
                                         ///
                                         /// Extracting Temmie Launcher
                                         ///
@@ -712,33 +649,9 @@ namespace TL_Installer_Prototype
                                                 answer = Console.ReadLine();
                                                 if (answer == "y" || answer == "Y")
                                                 {
-                                                    ///
-                                                    /// Checking if nwjs.zip exists and if not it downloads
-                                                    ///
 
                                                     deleter.Delete_Files_And_Folders(downloadFolderInstallDir);
                                                     Directory.CreateDirectory(downloadFolderInstallDir);
-
-                                                    if (File.Exists(Path.Combine(tempDownloadFolder, "nwjs.zip")))
-                                                    {
-                                                        Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Nw.js already downloaded. Proceeding...");
-                                                    }
-                                                    else
-                                                    {
-                                                        Console.WriteLine(label_downloadingFiles);
-                                                        nwjsDownloader.nwJsDownload();
-                                                        Console.WriteLine(label_processComplete);
-                                                    }
-                                                    ///
-                                                    /// Extracting nwjs
-                                                    ///
-                                                    Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting! {nwjs_FileNameWithExtension} Please wait.");
-                                                    extractor.ExtractZipContent(Path.Combine(tempDownloadFolder, "nwjs.zip"), Path.Combine(tempDownloadFolder, "nwjs"));
-                                                    mover.Move_Files_And_Folders(Path.Combine(tempDownloadFolder, "nwjs", "nwjs-v0.70.1-win-x64"), downloadFolderInstallDir);
-                                                    Directory.Delete(Path.Combine(tempDownloadFolder, "nwjs", "nwjs-v0.70.1-win-x64"));
-                                                    Directory.Delete(Path.Combine(tempDownloadFolder, "nwjs"));
-                                                    Console.WriteLine(label_processComplete);
-
                                                     ///
                                                     /// Extracting Temmie Launcher
                                                     ///
@@ -791,30 +704,6 @@ namespace TL_Installer_Prototype
                                         else
                                         {
                                             ///
-                                            /// Checking if nwjs.zip exists and if not it downloads
-                                            ///
-
-                                            if (File.Exists(Path.Combine(tempDownloadFolder, "nwjs.zip")))
-                                            {
-                                                Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Nw.js already downloaded. Proceeding...");
-                                            }
-                                            else
-                                            {
-                                                Console.WriteLine(label_downloadingFiles);
-                                                nwjsDownloader.nwJsDownload();
-                                                Console.WriteLine(label_processComplete);
-                                            }
-                                            ///
-                                            /// Extracing nwjs
-                                            ///
-                                            Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting! {nwjs_FileNameWithExtension}");
-                                            extractor.ExtractZipContent(Path.Combine(tempDownloadFolder, "nwjs.zip"), Path.Combine(tempDownloadFolder, "nwjs"));
-                                            mover.Move_Files_And_Folders(Path.Combine(tempDownloadFolder, "nwjs", "nwjs-v0.70.1-win-x64"), downloadFolderInstallDir);
-                                            Directory.Delete(Path.Combine(tempDownloadFolder, "nwjs", "nwjs-v0.70.1-win-x64"));
-                                            Directory.Delete(Path.Combine(tempDownloadFolder, "nwjs"));
-                                            Console.WriteLine(label_processComplete);
-
-                                            ///
                                             /// Extracting Temmie Launcher
                                             ///
                                             Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {tLFileNameWIthExtension}");
@@ -863,31 +752,6 @@ namespace TL_Installer_Prototype
                                     if (!Directory.Exists(customInstallDir))
                                     {
                                         Directory.CreateDirectory(customInstallDir);
-
-                                        ///
-                                        /// Checking if nwjs.zip exists and if not it downloads
-                                        ///
-
-                                        if (File.Exists(Path.Combine(tempDownloadFolder, "nwjs.zip")))
-                                        {
-                                            Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Nw.js already downloaded. Proceeding...");
-                                        }
-                                        else
-                                        {
-                                            Console.WriteLine(label_downloadingFiles);
-                                            nwjsDownloader.nwJsDownload();
-                                            Console.WriteLine(label_processComplete);
-                                        }
-
-                                        ///
-                                        /// Extracting nwjs 
-                                        ///
-                                        Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting! {nwjs_FileNameWithExtension}");
-                                        extractor.ExtractZipContent(Path.Combine(tempDownloadFolder, "nwjs.zip"), Path.Combine(tempDownloadFolder, "nwjs"));
-                                        mover.Move_Files_And_Folders(Path.Combine(tempDownloadFolder, "nwjs", "nwjs-v0.70.1-win-x64"), customInstallDir);
-                                        Directory.Delete(Path.Combine(tempDownloadFolder, "nwjs", "nwjs-v0.70.1-win-x64"));
-                                        Directory.Delete(Path.Combine(tempDownloadFolder, "nwjs"));
-                                        Console.WriteLine(label_processComplete);
 
                                         ///
                                         /// Extracting Temmie Launcher
@@ -942,30 +806,6 @@ namespace TL_Installer_Prototype
                                                     Directory.CreateDirectory(customInstallDir);
 
                                                     ///
-                                                    /// Checking if nwjs.zip exists and if not it downloads
-                                                    ///
-                                                    if (File.Exists(Path.Combine(tempDownloadFolder, "nwjs.zip")))
-                                                    {
-                                                        Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Nw.js already downloaded. Proceeding...");
-                                                    }
-                                                    else
-                                                    {
-                                                        Console.WriteLine(label_downloadingFiles);
-                                                        nwjsDownloader.nwJsDownload();
-                                                        Console.WriteLine(label_processComplete);
-                                                    }
-
-                                                    ///
-                                                    /// Extracting nwjs
-                                                    ///
-                                                    Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting! {nwjs_FileNameWithExtension}");
-                                                    extractor.ExtractZipContent(Path.Combine(tempDownloadFolder, "nwjs.zip"), Path.Combine(tempDownloadFolder, "nwjs"));
-                                                    mover.Move_Files_And_Folders(Path.Combine(tempDownloadFolder, "nwjs", "nwjs-v0.70.1-win-x64"), customInstallDir);
-                                                    Directory.Delete(Path.Combine(tempDownloadFolder, "nwjs", "nwjs-v0.70.1-win-x64"));
-                                                    Directory.Delete(Path.Combine(tempDownloadFolder, "nwjs"));
-                                                    Console.WriteLine(label_processComplete);
-
-                                                    ///
                                                     /// Extracting Temmie Launcher
                                                     ///
                                                     Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {tLFileNameWIthExtension}");
@@ -1015,30 +855,6 @@ namespace TL_Installer_Prototype
                                         }
                                         else
                                         {
-                                            ///
-                                            /// Checking if nwjs.zip exists and if not it downloads
-                                            ///
-                                            if (File.Exists(Path.Combine(tempDownloadFolder, "nwjs.zip")))
-                                            {
-                                                Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Nw.js already downloaded. Proceeding...");
-                                            }
-                                            else
-                                            {
-                                                Console.WriteLine(label_downloadingFiles);
-                                                nwjsDownloader.nwJsDownload();
-                                                Console.WriteLine(label_processComplete);
-                                            }
-
-                                            ///
-                                            /// Extracting nwjs
-                                            ///
-                                            Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting! {nwjs_FileNameWithExtension}");
-                                            extractor.ExtractZipContent(Path.Combine(tempDownloadFolder, "nwjs.zip"), Path.Combine(tempDownloadFolder, "nwjs"));
-                                            mover.Move_Files_And_Folders(Path.Combine(tempDownloadFolder, "nwjs", "nwjs-v0.70.1-win-x64"), customInstallDir);
-                                            Directory.Delete(Path.Combine(tempDownloadFolder, "nwjs", "nwjs-v0.70.1-win-x64"));
-                                            Directory.Delete(Path.Combine(tempDownloadFolder, "nwjs"));
-                                            Console.WriteLine(label_processComplete);
-
                                             ///
                                             /// Extracting Temmie Launcher
                                             ///
