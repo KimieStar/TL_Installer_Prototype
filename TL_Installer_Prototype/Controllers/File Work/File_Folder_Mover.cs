@@ -48,7 +48,7 @@ namespace TL_Installer_Prototype.Controllers
 
                         }
                     }
-                    
+
                 }
                 else
                 {
@@ -91,9 +91,9 @@ namespace TL_Installer_Prototype.Controllers
             {
                 throw new Exception("Folder does not exist");
             }
-            
+
         }
 
     }
 }
- 
+

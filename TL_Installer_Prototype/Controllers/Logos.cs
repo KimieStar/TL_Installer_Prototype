@@ -18,7 +18,8 @@ namespace TL_Installer_Prototype.Controllers
             Console.WriteLine("                                                     Operations:\n");
             Console.WriteLine("                                                     1.Installation");
             Console.WriteLine("                                                     2.Update");
-            Console.WriteLine("                                                     3.Exit\n");
+            Console.WriteLine("                                                     3.Add old installation");
+            Console.WriteLine("                                                     4.Exit\n");
             Console.Write("                                                Choose Your Operation: ");
         }
 
@@ -40,8 +41,7 @@ namespace TL_Installer_Prototype.Controllers
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine("                                                     Operations:\n");
             Console.WriteLine("                                                     1.Automatic Installation");
-            Console.WriteLine("                                                     2.Manual Installation");
-            Console.WriteLine("                                                     3.Exit\n");
+            Console.WriteLine("                                                     2.Exit\n");
             Console.Write("                                                Choose Your Operation: ");
         }
 

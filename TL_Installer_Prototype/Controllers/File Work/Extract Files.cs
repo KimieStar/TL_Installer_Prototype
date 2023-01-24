@@ -27,7 +27,7 @@ namespace TL_Installer_Prototype.Controllers
                         continue;
                     }
 
-                    String entryFileName = zipEntry.Name;
+                    string entryFileName = zipEntry.Name;
                     // to remove the folder from the entry:- entryFileName = Path.GetFileName(entryFileName);
                     // Optionally match entrynames against a selection list here to skip as desired.
                     // The unpacked length is available in the zipEntry.Size property.
@@ -37,7 +37,7 @@ namespace TL_Installer_Prototype.Controllers
                     Stream zipStream = file.GetInputStream(zipEntry);
 
                     // Manipulate the output filename here as desired.
-                    String fullZipToPath = Path.Combine(OutputFolder, entryFileName);
+                    string fullZipToPath = Path.Combine(OutputFolder, entryFileName);
                     string directoryName = Path.GetDirectoryName(fullZipToPath);
 
                     if (directoryName.Length > 0)

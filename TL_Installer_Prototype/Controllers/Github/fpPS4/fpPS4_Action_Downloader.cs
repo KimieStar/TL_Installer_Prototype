@@ -29,7 +29,7 @@ namespace TL_Installer_Prototype.Controllers.Github.fpPS4
             fpPS4_Action_Link_Grabber githubLinkGrabber = new fpPS4_Action_Link_Grabber();
             fpPS4_Artifact_Json gj = new fpPS4_Artifact_Json();
 
-            string downloadFilePath = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "fpPS4.zip")); 
+            string downloadFilePath = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "fpPS4.zip"));
             string latestArtifactId = gj.getLatestArtifactID(GToken);
             Uri endpointLatestAction = new Uri("https://api.github.com/repos/red-prig/fpPS4/actions/artifacts/" + $"{latestArtifactId}" + "/zip");
             string link = githubLinkGrabber.LinkGrabber(endpointLatestAction, GToken);

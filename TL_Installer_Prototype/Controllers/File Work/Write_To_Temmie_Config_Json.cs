@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TL_Installer_Prototype.Controllers.File_Work
+namespace TL_Installer_Prototype.Controllers
 {
     internal class Write_To_Temmie_Config_Json
     {
@@ -14,22 +14,13 @@ namespace TL_Installer_Prototype.Controllers.File_Work
             public string latestCommitSha { get; set; }
         }
 
-        public void parseAndWriteTemmieJsonConfig_sha(string JsonFilePath,string newSha)
+        public void parseAndWriteTemmieJsonConfig_sha(string JsonFilePath, string newSha)
         {
             Sha newSettings = new Sha();
             newSettings.latestCommitSha = newSha;
             var newJson = JsonConvert.SerializeObject(newSettings, Formatting.None);
             File.WriteAllText(JsonFilePath, newJson);
 
-        }
-
-        public void createParseWriteTemmieJsonConfig_sha(string JsonFilePath, string newSha)
-        {
-            Sha newSettings = new Sha();
-            newSettings.latestCommitSha = newSha;
-            var newJson = JsonConvert.SerializeObject(newSettings, Formatting.None);
-            File.Create(JsonFilePath);
-            File.WriteAllText(JsonFilePath, newJson);
         }
     }
 }

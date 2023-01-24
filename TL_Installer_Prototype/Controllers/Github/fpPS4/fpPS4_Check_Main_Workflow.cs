@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TL_Installer_Prototype.Controllers;
 
 namespace TL_Installer_Prototype.Controllers.Github.fpPS4
 {

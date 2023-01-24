@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TL_Installer_Prototype.Controllers.File_Work
+namespace TL_Installer_Prototype.Controllers
 {
     internal class File_Folder_Deleter
     {
@@ -38,7 +38,7 @@ namespace TL_Installer_Prototype.Controllers.File_Work
             {
                 throw new Exception("Folder does not exist");
             }
-            
+
         }
     }
 }

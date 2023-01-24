@@ -1,10 +1,9 @@
 ﻿using System.IO;
-using TL_Installer_Prototype.Controllers;
-using TL_Installer_Prototype.Controllers.Github.fpPS4;
-using TL_Installer_Prototype.Controllers.Github.TemmieLauncher;
 using System.Configuration;
-using TL_Installer_Prototype.Controllers.File_Work;
 using System.Runtime.InteropServices;
+using TL_Installer_Prototype.Controllers.Github.fpPS4;
+using TL_Installer_Prototype.Controllers;
+using TL_Installer_Prototype.Controllers.Github.TemmieLauncher;
 
 namespace TL_Installer_Prototype
 {
@@ -31,6 +30,7 @@ namespace TL_Installer_Prototype
             string InstallDir;
             string customInstallDir;
             string operationMenuInstall;
+            string updateAnswer;
 
             ///
             /// Declaring Manual Download File Paths
@@ -73,12 +73,14 @@ namespace TL_Installer_Prototype
             fpPS4_Artifact_Json artifactJson = new fpPS4_Artifact_Json();
             fpPS4_Action_Downloader actionDownloader = new fpPS4_Action_Downloader();
             Write_To_Temmie_Config_Json writeTemmieConfig = new Write_To_Temmie_Config_Json();
+            TL_Commit_Json tL_Commit_Json = new TL_Commit_Json();
+            TL_Json_Writer TljsonWriter = new TL_Json_Writer();
             
 
                          /////////Declaring fpPS4 Action Variables//////////
             string GToken = "";
             
-            string latestArtifactSha = artifactJson.getLatestArtifactSha(GToken);
+            
 
             ///
             /// Creating TL_Installer Custom Folder
@@ -96,6 +98,7 @@ namespace TL_Installer_Prototype
 
             while (true)
             {
+
                 logos.Logo();
                 operation = Console.ReadLine();
 
@@ -110,6 +113,8 @@ namespace TL_Installer_Prototype
 
                         if (operationMenuInstall == "1")
                         {
+                            string latestArtifactSha = artifactJson.getLatestArtifactSha(GToken);
+                            string latestcommitSha = tL_Commit_Json.commitSha(GToken);
                             ///
                             /// Extracting or Downloading files if needed
                             ///
@@ -238,6 +243,34 @@ namespace TL_Installer_Prototype
                                         File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "Launcher.zip")));
                                         File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "fpPS4-Temmie-s-Launcher-main.zip")));
                                         File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "fpPS4.zip")));
+                                        if (!File.Exists(Path.Combine(TLFolder, "tl_config.json")))
+                                        {
+                                            TljsonWriter.createTlJson(Path.Combine(TLFolder, "tl_config.json"),downloadFolderInstallDir, latestcommitSha);
+                                        }
+                                        else
+                                        {
+                                            if (TljsonWriter.isTlJsonEmpty(Path.Combine(TLFolder, "tl_config.json")) == true)
+                                            {
+                                                File.Delete(Path.Combine(TLFolder, "tl_config.json"));
+                                                TljsonWriter.createTlJson(Path.Combine(TLFolder, "tl_config.json"), downloadFolderInstallDir, latestcommitSha);
+                                            }
+                                            else
+                                            {
+                                                bool chk = TljsonWriter.checkIfInstallationExists(Path.Combine(TLFolder, "tl_config.json"), downloadFolderInstallDir);
+                                                if (chk == false)
+                                                {
+                                                    TljsonWriter.addInstallationLog(Path.Combine(TLFolder, "tl_config.json"), downloadFolderInstallDir, latestcommitSha);
+                                                }
+                                                else
+                                                {
+                                                    string sha = TljsonWriter.getShaFromInstallation(Path.Combine(TLFolder, "tl_config.json"), downloadFolderInstallDir);
+                                                    if (sha != latestcommitSha)
+                                                    {
+                                                        TljsonWriter.changeLatestSha(Path.Combine(TLFolder, "tl_config.json"), downloadFolderInstallDir, latestcommitSha);
+                                                    }
+                                                }
+                                            }
+                                        }
                                         instSoF = true;
                                     }
                                     else if (Directory.Exists(downloadFolderInstallDir))
@@ -277,6 +310,34 @@ namespace TL_Installer_Prototype
                                                     File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "Launcher.zip")));
                                                     File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "fpPS4-Temmie-s-Launcher-main.zip")));
                                                     File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "fpPS4.zip")));
+                                                    if (!File.Exists(Path.Combine(TLFolder, "tl_config.json")))
+                                                    {
+                                                        TljsonWriter.createTlJson(Path.Combine(TLFolder, "tl_config.json"), downloadFolderInstallDir, latestcommitSha);
+                                                    }
+                                                    else
+                                                    {
+                                                        if (TljsonWriter.isTlJsonEmpty(Path.Combine(TLFolder, "tl_config.json")) == true)
+                                                        {
+                                                            File.Delete(Path.Combine(TLFolder, "tl_config.json"));
+                                                            TljsonWriter.createTlJson(Path.Combine(TLFolder, "tl_config.json"), downloadFolderInstallDir, latestcommitSha);
+                                                        }
+                                                        else
+                                                        {
+                                                            bool chk = TljsonWriter.checkIfInstallationExists(Path.Combine(TLFolder, "tl_config.json"), downloadFolderInstallDir);
+                                                            if (chk == false)
+                                                            {
+                                                                TljsonWriter.addInstallationLog(Path.Combine(TLFolder, "tl_config.json"), downloadFolderInstallDir, latestcommitSha);
+                                                            }
+                                                            else
+                                                            {
+                                                                string sha = TljsonWriter.getShaFromInstallation(Path.Combine(TLFolder, "tl_config.json"), downloadFolderInstallDir);
+                                                                if (sha != latestcommitSha)
+                                                                {
+                                                                    TljsonWriter.changeLatestSha(Path.Combine(TLFolder, "tl_config.json"), downloadFolderInstallDir, latestcommitSha);
+                                                                }
+                                                            }
+                                                        }
+                                                    }
                                                     instSoF = true;
                                                     break;
                                                 }
@@ -318,6 +379,34 @@ namespace TL_Installer_Prototype
                                             File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "Launcher.zip")));
                                             File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "fpPS4-Temmie-s-Launcher-main.zip")));
                                             File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "fpPS4.zip")));
+                                            if (!File.Exists(Path.Combine(TLFolder, "tl_config.json")))
+                                            {
+                                                TljsonWriter.createTlJson(Path.Combine(TLFolder, "tl_config.json"), downloadFolderInstallDir, latestcommitSha);
+                                            }
+                                            else
+                                            {
+                                                if (TljsonWriter.isTlJsonEmpty(Path.Combine(TLFolder, "tl_config.json")) == true)
+                                                {
+                                                    File.Delete(Path.Combine(TLFolder, "tl_config.json"));
+                                                    TljsonWriter.createTlJson(Path.Combine(TLFolder, "tl_config.json"), downloadFolderInstallDir, latestcommitSha);
+                                                }
+                                                else
+                                                {
+                                                    bool chk = TljsonWriter.checkIfInstallationExists(Path.Combine(TLFolder, "tl_config.json"), downloadFolderInstallDir);
+                                                    if (chk == false)
+                                                    {
+                                                        TljsonWriter.addInstallationLog(Path.Combine(TLFolder, "tl_config.json"), downloadFolderInstallDir, latestcommitSha);
+                                                    }
+                                                    else
+                                                    {
+                                                        string sha = TljsonWriter.getShaFromInstallation(Path.Combine(TLFolder, "tl_config.json"), downloadFolderInstallDir);
+                                                        if (sha != latestcommitSha)
+                                                        {
+                                                            TljsonWriter.changeLatestSha(Path.Combine(TLFolder, "tl_config.json"), downloadFolderInstallDir, latestcommitSha);
+                                                        }
+                                                    }
+                                                }
+                                            }
                                             instSoF = true;
                                         }
                                     }
@@ -357,6 +446,34 @@ namespace TL_Installer_Prototype
                                         File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "Launcher.zip")));
                                         File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "fpPS4-Temmie-s-Launcher-main.zip")));
                                         File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "fpPS4.zip")));
+                                        if (!File.Exists(Path.Combine(TLFolder, "tl_config.json")))
+                                        {
+                                            TljsonWriter.createTlJson(Path.Combine(TLFolder, "tl_config.json"),customInstallDir, latestcommitSha);
+                                        }
+                                        else
+                                        {
+                                            if (TljsonWriter.isTlJsonEmpty(Path.Combine(TLFolder, "tl_config.json")) == true)
+                                            {
+                                                File.Delete(Path.Combine(TLFolder, "tl_config.json"));
+                                                TljsonWriter.createTlJson(Path.Combine(TLFolder, "tl_config.json"), customInstallDir, latestcommitSha);
+                                            }
+                                            else
+                                            {
+                                                bool chk = TljsonWriter.checkIfInstallationExists(Path.Combine(TLFolder, "tl_config.json"), customInstallDir);
+                                                if (chk == false)
+                                                {
+                                                    TljsonWriter.addInstallationLog(Path.Combine(TLFolder, "tl_config.json"), customInstallDir, latestcommitSha);
+                                                }
+                                                else
+                                                {
+                                                    string sha = TljsonWriter.getShaFromInstallation(Path.Combine(TLFolder, "tl_config.json"), customInstallDir);
+                                                    if (sha != latestcommitSha)
+                                                    {
+                                                        TljsonWriter.changeLatestSha(Path.Combine(TLFolder, "tl_config.json"), customInstallDir, latestcommitSha);
+                                                    }
+                                                }
+                                            }
+                                        }
                                         instSoF = true;
                                     }
                                     else if (Directory.Exists(customInstallDir))
@@ -397,6 +514,34 @@ namespace TL_Installer_Prototype
                                                     File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "Launcher.zip")));
                                                     File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "fpPS4-Temmie-s-Launcher-main.zip")));
                                                     File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "fpPS4.zip")));
+                                                    if (!File.Exists(Path.Combine(TLFolder, "tl_config.json")))
+                                                    {
+                                                        TljsonWriter.createTlJson(Path.Combine(TLFolder, "tl_config.json"), customInstallDir, latestcommitSha);
+                                                    }
+                                                    else
+                                                    {
+                                                        if (TljsonWriter.isTlJsonEmpty(Path.Combine(TLFolder, "tl_config.json")) == true)
+                                                        {
+                                                            File.Delete(Path.Combine(TLFolder, "tl_config.json"));
+                                                            TljsonWriter.createTlJson(Path.Combine(TLFolder, "tl_config.json"), customInstallDir, latestcommitSha);
+                                                        }
+                                                        else
+                                                        {
+                                                            bool chk = TljsonWriter.checkIfInstallationExists(Path.Combine(TLFolder, "tl_config.json"), customInstallDir);
+                                                            if (chk == false)
+                                                            {
+                                                                TljsonWriter.addInstallationLog(Path.Combine(TLFolder, "tl_config.json"), customInstallDir, latestcommitSha);
+                                                            }
+                                                            else
+                                                            {
+                                                                string sha = TljsonWriter.getShaFromInstallation(Path.Combine(TLFolder, "tl_config.json"), customInstallDir);
+                                                                if (sha != latestcommitSha)
+                                                                {
+                                                                    TljsonWriter.changeLatestSha(Path.Combine(TLFolder, "tl_config.json"), customInstallDir, latestcommitSha);
+                                                                }
+                                                            }
+                                                        }
+                                                    }
                                                     break;
                                                 }
                                                 else if (answer == "n" || answer == "N")
@@ -437,6 +582,34 @@ namespace TL_Installer_Prototype
                                             File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "Launcher.zip")));
                                             File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "fpPS4-Temmie-s-Launcher-main.zip")));
                                             File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "fpPS4.zip")));
+                                            if (!File.Exists(Path.Combine(TLFolder, "tl_config.json")))
+                                            {
+                                                TljsonWriter.createTlJson(Path.Combine(TLFolder, "tl_config.json"), customInstallDir, latestcommitSha);
+                                            }
+                                            else
+                                            {
+                                                if (TljsonWriter.isTlJsonEmpty(Path.Combine(TLFolder, "tl_config.json")) == true)
+                                                {
+                                                    File.Delete(Path.Combine(TLFolder, "tl_config.json"));
+                                                    TljsonWriter.createTlJson(Path.Combine(TLFolder, "tl_config.json"), customInstallDir, latestcommitSha);
+                                                }
+                                                else
+                                                {
+                                                    bool chk = TljsonWriter.checkIfInstallationExists(Path.Combine(TLFolder, "tl_config.json"), customInstallDir);
+                                                    if (chk == false)
+                                                    {
+                                                        TljsonWriter.addInstallationLog(Path.Combine(TLFolder, "tl_config.json"), customInstallDir, latestcommitSha);
+                                                    }
+                                                    else
+                                                    {
+                                                        string sha = TljsonWriter.getShaFromInstallation(Path.Combine(TLFolder, "tl_config.json"), customInstallDir);
+                                                        if (sha != latestcommitSha)
+                                                        {
+                                                            TljsonWriter.changeLatestSha(Path.Combine(TLFolder, "tl_config.json"), customInstallDir, latestcommitSha);
+                                                        }
+                                                    }
+                                                }
+                                            }
                                             instSoF = true;
                                         }
                                     }
@@ -468,458 +641,7 @@ namespace TL_Installer_Prototype
                         }
                         else if (operationMenuInstall == "2")
                         {
-                            logos.Logo2();
-                            ///
-                            /// Getting the Temmie Launcher Path
-                            ///
-
-                            while (true)
-                            {
-                                temmiePath = Console.ReadLine();
-                                
-
-                                if (temmiePath.StartsWith("\"") && temmiePath.EndsWith("\""))
-                                {
-                                    temmiePath = temmiePath.Remove(0, 1);
-                                    temmiePath = temmiePath.Remove(temmiePath.Length - 1, 1);
-                                }
-
-                                tLFileNameWIthExtension = Path.GetFileName(temmiePath);
-
-                                if (File.Exists(temmiePath) && temmiePath.Contains(".zip") && temmiePath.Contains("Launcher.zip"))
-                                {
-                                    Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Launcher.zip Found!");
-                                    checkForTL = true;
-                                    break;
-                                }
-                                else
-                                {
-                                    Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Launcher.zip not found");
-                                    Console.Write("\n~~~~~~~~~~~~~~~~~~~~> Enter path to Launcher.zip: ");
-                                }
-                            }
-                            ///
-                            /// Getting the fpPS4-Temmie-s-Launcher-main Launcher Path
-                            ///
-
-                            Console.Write("\n~~~~~~~~~~~~~~~~~~~~> Enter path to fpPS4-Temmie-s-Launcher-main.zip: ");
-                            while (true)
-                            {
-
-                                temmie_mainPath = Console.ReadLine();
-                                tL_Main_FileNameWIthExtension = Path.GetFileName(temmie_mainPath);
-
-                                if (temmie_mainPath.StartsWith("\"") && temmie_mainPath.EndsWith("\""))
-                                {
-                                    temmie_mainPath = temmie_mainPath.Remove(0, 1);
-                                    temmie_mainPath = temmie_mainPath.Remove(temmie_mainPath.Length - 1, 1);
-                                }
-
-                                tL_Main_FileNameWIthExtension = Path.GetFileName(temmie_mainPath);
-
-                                if (File.Exists(temmie_mainPath) && temmie_mainPath.Contains(".zip") && temmie_mainPath.Contains("fpPS4-Temmie-s-Launcher-main.zip"))
-                                {
-                                    Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> fpPS4-Temmie-s-Launcher-main.zip Found!");
-                                    checkForTL_Main = true;
-                                    break;
-                                }
-                                else
-                                {
-                                    Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> fpPS4-Temmie-s-Launcher-main.zip not found");
-                                    Console.Write("\n~~~~~~~~~~~~~~~~~~~~> Enter path to fpPS4-Temmie-s-Launcher-main.zip: ");
-                                }
-                            }
-
-                            ///
-                            /// Getting the fpPS4 Launcher Path
-                            ///
-                            Console.Write("\n~~~~~~~~~~~~~~~~~~~~> Enter path to fpPS4.zip: ");
-                            while (true)
-                            {
-                                fpps4Path = Console.ReadLine();
-
-
-                                if (fpps4Path.StartsWith("\"") && fpps4Path.EndsWith("\""))
-                                {
-                                    fpps4Path = fpps4Path.Remove(0, 1);
-                                    fpps4Path = fpps4Path.Remove(fpps4Path.Length - 1, 1);
-                                }
-
-                                fpps4FileNameWIthExtension = Path.GetFileName(fpps4Path);
-
-                                if (File.Exists(fpps4Path) && fpps4Path.Contains(".zip") && fpps4Path.Contains("fpPS4"))
-                                {
-                                    Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> fpPS4.zip Found!");
-                                    checkForFp = true;
-                                    break;
-                                }
-                                else
-                                {
-                                    Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> fpPS4.zip not found");
-                                    Console.Write("\n~~~~~~~~~~~~~~~~~~~~> Enter path to fpPS4.zip: ");
-                                }
-                            }
-
-                            ///
-                            /// Checks if the needed files exist
-                            /// Getting Installation Directory
-                            /// Installation
-                            ///
-                            if (checkForFp == true &&  checkForTL == true && checkForTL_Main == true)
-                            {
-                                while (true)
-                                {
-                                    Console.Write("\n~~~~~~~~~~~~~~~~~~~~> Enter installation path (Leave blank to install in Downloads folder): ");
-                                    InstallDir = Console.ReadLine();
-                                    
-                                    if (InstallDir.StartsWith("\"") && InstallDir.EndsWith("\""))
-                                    {
-                                        InstallDir = InstallDir.Remove(0, 1);
-                                        InstallDir = InstallDir.Remove(InstallDir.Length - 1, 1);
-                                    }
-                                    customInstallDir = Path.Combine(InstallDir, "Temmie Launcher");
-                                    if (Directory.Exists(InstallDir) || InstallDir == "")
-                                    {
-                                        break;
-                                    }
-                                    else
-                                    {
-                                        Console.WriteLine(label_pathNotFound);
-                                    }
-                                }
-
-                                ///
-                                /// Installing to Download Folder
-                                ///
-                                if (InstallDir == "")
-                                {
-                                    string GamesFolderDownloadInstallDir = Path.Combine(downloadFolderInstallDir, "Games");
-                                    ///
-                                    /// Checking if downloadFolderInstallDir Exists
-                                    ///
-                                    if (!Directory.Exists(downloadFolderInstallDir))
-                                    {
-                                        Directory.CreateDirectory(downloadFolderInstallDir);
-                                        
-                                        ///
-                                        /// Extracting Temmie Launcher
-                                        ///
-                                        Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {tLFileNameWIthExtension}");
-                                        extractor.ExtractZipContent(temmiePath, downloadFolderInstallDir);
-                                        Console.WriteLine(label_processComplete);
-
-                                        ///
-                                        /// Extracting Temmie Launcher Main
-                                        ///
-                                        Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {tL_Main_FileNameWIthExtension}");
-                                        Console.WriteLine(label_processComplete);
-                                        extractor.ExtractZipContent(temmie_mainPath, downloadFolderInstallDir);
-                                        Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Moving Files...");
-                                        mover.Move_Files_And_Folders(Path.Combine(downloadFolderInstallDir,"fpPS4-Temmie-s-Launcher-main"), downloadFolderInstallDir);
-                                        Directory.Delete(Path.Combine(downloadFolderInstallDir, "fpPS4-Temmie-s-Launcher-main"));
-
-
-                                        ///
-                                        /// Extracting fpPS4.zip
-                                        ///
-                                        Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {fpps4FileNameWIthExtension}");
-                                        extractor.ExtractZipContent(fpps4Path, Path.Combine(downloadFolderInstallDir, "Emu"));
-                                        Console.WriteLine(label_processComplete);
-
-                                        ///
-                                        /// Creating Games and Creating Settings.json
-                                        ///
-                                        Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Creating 'Games' folder");
-                                        Directory.CreateDirectory(GamesFolderDownloadInstallDir);
-                                        writeTemmieConfig.parseAndWriteTemmieJsonConfig_sha(Path.Combine(downloadFolderInstallDir, "Settings.json"), latestArtifactSha);
-                                        File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "Launcher.zip")));
-                                        File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "fpPS4-Temmie-s-Launcher-main.zip")));
-                                        File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "fpPS4.zip")));
-                                        instSoF = true;
-                                    }
-                                    else if (Directory.Exists(downloadFolderInstallDir))
-                                    {
-                                        if (Directory.GetFileSystemEntries(downloadFolderInstallDir).Count() > 0)
-                                        {
-                                            string answer = "";
-                                            Console.Write("\n~~~~~~~~~~~~~~~~~~~~> Do you want to overwrite folder 'Temmie Launcher' (Y/n): ");
-
-                                            while (true)
-                                            {
-                                                answer = Console.ReadLine();
-                                                if (answer == "y" || answer == "Y")
-                                                {
-
-                                                    deleter.Delete_Files_And_Folders(downloadFolderInstallDir);
-                                                    Directory.CreateDirectory(downloadFolderInstallDir);
-                                                    ///
-                                                    /// Extracting Temmie Launcher
-                                                    ///
-                                                    Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {tLFileNameWIthExtension}");
-                                                    extractor.ExtractZipContent(temmiePath, downloadFolderInstallDir);
-                                                    Console.WriteLine(label_processComplete);
-
-                                                    ///
-                                                    /// Extracting Temmie Launcher Main
-                                                    ///
-
-                                                    Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {tL_Main_FileNameWIthExtension}");
-                                                    extractor.ExtractZipContent(temmie_mainPath, downloadFolderInstallDir);
-                                                    Console.WriteLine(label_processComplete);
-                                                    Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Moving Files...");
-                                                    mover.Move_Files_And_Folders(Path.Combine(downloadFolderInstallDir, "fpPS4-Temmie-s-Launcher-main"), downloadFolderInstallDir);
-                                                    Directory.Delete(Path.Combine(downloadFolderInstallDir, "fpPS4-Temmie-s-Launcher-main"));
-
-                                                    ///
-                                                    /// Extracting fpPS4.zip
-                                                    ///
-                                                    Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {fpps4FileNameWIthExtension}");
-                                                    extractor.ExtractZipContent(fpps4Path, Path.Combine(downloadFolderInstallDir, "Emu"));
-                                                    Console.WriteLine(label_processComplete);
-
-                                                    ///
-                                                    /// Creating Games and Creating Settings.json
-                                                    ///
-                                                    Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Creating 'Games' folder");
-                                                    Directory.CreateDirectory(GamesFolderDownloadInstallDir);
-                                                    writeTemmieConfig.parseAndWriteTemmieJsonConfig_sha(Path.Combine(downloadFolderInstallDir, "Settings.json"), latestArtifactSha);
-                                                    File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "Launcher.zip")));
-                                                    File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "fpPS4-Temmie-s-Launcher-main.zip")));
-                                                    File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "fpPS4.zip")));
-                                                    instSoF = true;
-                                                    break;
-                                                }
-                                                else if (answer == "n" || answer == "N")
-                                                {
-                                                    instSoF = false;
-                                                    break;
-                                                }
-                                                else
-                                                {
-                                                    Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Invalid expression!");
-                                                    Console.Write("\n~~~~~~~~~~~~~~~~~~~~> Do you want to overwrite folder 'Temmie Launcher' (Y/n): ");
-                                                }
-                                            }
-                                        }
-                                        else
-                                        {
-                                            ///
-                                            /// Extracting Temmie Launcher
-                                            ///
-                                            Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {tLFileNameWIthExtension}");
-                                            extractor.ExtractZipContent(temmiePath, downloadFolderInstallDir);
-                                            Console.WriteLine(label_processComplete);
-
-                                            ///
-                                            /// Extracting Temmie Launcher Main
-                                            ///
-                                            Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {tL_Main_FileNameWIthExtension}");
-                                            extractor.ExtractZipContent(temmie_mainPath, downloadFolderInstallDir);
-                                            Console.WriteLine(label_processComplete);
-                                            Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Moving Files...");
-                                            mover.Move_Files_And_Folders(Path.Combine(downloadFolderInstallDir, "fpPS4-Temmie-s-Launcher-main"), downloadFolderInstallDir);
-                                            Directory.Delete(Path.Combine(downloadFolderInstallDir, "fpPS4-Temmie-s-Launcher-main"));
-
-                                            ///
-                                            /// Extracting fpPS4.zip
-                                            ///
-                                            Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {fpps4FileNameWIthExtension}");
-                                            extractor.ExtractZipContent(fpps4Path, Path.Combine(downloadFolderInstallDir, "Emu"));
-                                            Console.WriteLine(label_processComplete);
-
-                                            ///
-                                            /// Creating Games and Creating Settings.json
-                                            ///
-                                            Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Creating 'Games' folder");
-                                            writeTemmieConfig.parseAndWriteTemmieJsonConfig_sha(Path.Combine(downloadFolderInstallDir, "Settings.json"), latestArtifactSha);
-                                            Directory.CreateDirectory(GamesFolderDownloadInstallDir);
-                                            File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "Launcher.zip")));
-                                            File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "fpPS4-Temmie-s-Launcher-main.zip")));
-                                            File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "fpPS4.zip")));
-                                            instSoF = true;
-                                        }
-                                    }
-                                }
-                                ///
-                                /// Installing to Custom Directory
-                                ///
-                                else
-                                {
-                                    string GamesFolderCustomInstallDir = Path.Combine(customInstallDir, "Games");
-                                    ///
-                                    /// Checking if the customInstallDir Exists and if not creating it
-                                    ///
-                                    if (!Directory.Exists(customInstallDir))
-                                    {
-                                        Directory.CreateDirectory(customInstallDir);
-
-                                        ///
-                                        /// Extracting Temmie Launcher
-                                        ///
-                                        Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {tLFileNameWIthExtension}");
-                                        extractor.ExtractZipContent(temmiePath, customInstallDir);
-                                        Console.WriteLine(label_processComplete);
-
-                                        ///
-                                        /// Extracting Temmie Launcher Main
-                                        ///
-
-                                        Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {tL_Main_FileNameWIthExtension}");
-                                        extractor.ExtractZipContent(temmie_mainPath, customInstallDir);
-                                        Console.WriteLine(label_processComplete);
-                                        Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Moving Files...");
-                                        mover.Move_Files_And_Folders(Path.Combine(customInstallDir, "fpPS4-Temmie-s-Launcher-main"), customInstallDir);
-                                        Directory.Delete(Path.Combine(customInstallDir, "fpPS4-Temmie-s-Launcher-main"));
-
-                                        ///
-                                        /// Extracting fpPS4.zip
-                                        ///
-                                        Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {fpps4FileNameWIthExtension}");
-                                        extractor.ExtractZipContent(fpps4Path, Path.Combine(customInstallDir, "Emu"));
-                                        Console.WriteLine(label_processComplete);
-
-                                        ///
-                                        /// Creating Games and Creating Settings.json
-                                        ///
-                                        Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Creating 'Games' folder");
-                                        Directory.CreateDirectory(GamesFolderCustomInstallDir);
-                                        writeTemmieConfig.parseAndWriteTemmieJsonConfig_sha(Path.Combine(customInstallDir, "Settings.json"), latestArtifactSha);
-                                        File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "Launcher.zip")));
-                                        File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "fpPS4-Temmie-s-Launcher-main.zip")));
-                                        File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "fpPS4.zip")));
-                                        instSoF = true;
-                                    }
-                                    else if (Directory.Exists(customInstallDir))
-                                    {
-                                        if (Directory.GetFileSystemEntries(customInstallDir).Count() > 0)
-                                        {
-                                            string answer = "";
-                                            Console.Write("\n~~~~~~~~~~~~~~~~~~~~> Do you want to overwrite folder 'Temmie Launcher' (Y/n): ");
-
-                                            while (true)
-                                            {
-                                                answer = Console.ReadLine();
-                                                if (answer == "y" || answer == "Y")
-                                                {
-
-                                                    deleter.Delete_Files_And_Folders(customInstallDir);
-                                                    Directory.CreateDirectory(customInstallDir);
-
-                                                    ///
-                                                    /// Extracting Temmie Launcher
-                                                    ///
-                                                    Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {tLFileNameWIthExtension}");
-                                                    extractor.ExtractZipContent(temmiePath, customInstallDir);
-                                                    Console.WriteLine(label_processComplete);
-
-                                                    ///
-                                                    /// Extracting Temmie Launcher Main
-                                                    ///
-                                                    Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {tL_Main_FileNameWIthExtension}");
-                                                    extractor.ExtractZipContent(temmie_mainPath, customInstallDir);
-                                                    Console.WriteLine(label_processComplete);
-                                                    Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Moving Files...");
-                                                    mover.Move_Files_And_Folders(Path.Combine(customInstallDir, "fpPS4-Temmie-s-Launcher-main"), customInstallDir);
-                                                    Directory.Delete(Path.Combine(customInstallDir, "fpPS4-Temmie-s-Launcher-main"));
-
-                                                    ///
-                                                    /// Extracting fpPS4.zip
-                                                    ///
-                                                    Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {fpps4FileNameWIthExtension}");
-                                                    extractor.ExtractZipContent(fpps4Path, Path.Combine(customInstallDir, "Emu"));
-                                                    Console.WriteLine(label_processComplete);
-
-                                                    ///
-                                                    /// Creating Games Folder and Creating Settings.json
-                                                    ///
-                                                    Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Creating Games Folder");
-                                                    writeTemmieConfig.parseAndWriteTemmieJsonConfig_sha(Path.Combine(customInstallDir, "Settings.json"), latestArtifactSha);
-                                                    Directory.CreateDirectory(GamesFolderCustomInstallDir);
-                                                    File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "Launcher.zip")));
-                                                    File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "fpPS4-Temmie-s-Launcher-main.zip")));
-                                                    File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "fpPS4.zip")));
-                                                    instSoF = true;
-                                                    break;
-                                                }
-                                                else if (answer == "n" || answer == "N")
-                                                {
-                                                    instSoF = false;
-                                                    break;
-                                                }
-                                                else
-                                                {
-                                                    Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Invalid expression!");
-                                                    Console.Write("\n~~~~~~~~~~~~~~~~~~~~> Do you want to overwrite folder 'Temmie Launcher' (Y/n): ");
-                                                }
-                                            }
-                                        }
-                                        else
-                                        {
-                                            ///
-                                            /// Extracting Temmie Launcher
-                                            ///
-                                            Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {tLFileNameWIthExtension}");
-                                            extractor.ExtractZipContent(temmiePath, customInstallDir);
-                                            Console.WriteLine(label_processComplete);
-
-                                            ///
-                                            /// Extracting Temmie Launcher Main
-                                            ///
-
-                                            Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {tL_Main_FileNameWIthExtension}");
-                                            extractor.ExtractZipContent(temmie_mainPath, customInstallDir);
-                                            Console.WriteLine(label_processComplete);
-                                            Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Moving Files...");
-                                            mover.Move_Files_And_Folders(Path.Combine(customInstallDir, "fpPS4-Temmie-s-Launcher-main"), customInstallDir);
-                                            Directory.Delete(Path.Combine(customInstallDir, "fpPS4-Temmie-s-Launcher-main"));
-
-                                            ///
-                                            /// Extracting fpPS4.zip
-                                            ///
-                                            Console.WriteLine($"\n~~~~~~~~~~~~~~~~~~~~> Extracting {fpps4FileNameWIthExtension}");
-                                            extractor.ExtractZipContent(fpps4Path, Path.Combine(customInstallDir, "Emu"));
-                                            Console.WriteLine(label_processComplete);
-
-                                            ///
-                                            /// Creating Games Folder and Creating Settings.json
-                                            ///
-                                            Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Creating 'Games' folder");
-                                            writeTemmieConfig.parseAndWriteTemmieJsonConfig_sha(Path.Combine(customInstallDir, "Settings.json"), latestArtifactSha);
-                                            Directory.CreateDirectory(GamesFolderCustomInstallDir);
-                                            File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "Launcher.zip")));
-                                            File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "fpPS4-Temmie-s-Launcher-main.zip")));
-                                            File.Delete(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TL_Installer", "tempDownload", "fpPS4.zip")));
-                                            instSoF = true;
-                                        }
-                                    }
-
-                                }
-                            }
-                            else
-                            {
-                                throw new Exception("Paths or Files are missing");
-                            }
-
-                            if (instSoF == true)
-                            {
-                                Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Installation finished successfully!");
-                                Console.Write(label_pressAnyKey);
-                                Console.ReadKey();
-                                Console.Clear();
-                                break;
-                            }
-                            else
-                            {
-                                Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Installation Canceled!");
-                                Console.Write(label_pressAnyKey);
-                                Console.ReadKey();
-                                Console.Clear();
-                                break;
-                            }
-                            
-                        }
-                        else if (operationMenuInstall == "3")
-                        {
+                            logos.Logo4();
                             Console.Clear();
                             break;
                         }
@@ -939,13 +661,114 @@ namespace TL_Installer_Prototype
                 }
                 else if (operation == "2")
                 {
+                    string latestcommitSha = tL_Commit_Json.commitSha(GToken);
                     Console.Clear();
-                    Console.Write("Coming soon!");
-                    Console.ReadKey();
+                    logos.Logo4();
+                    while (true)
+                    {
+                        Console.Write("\n~~~~~~~~~~~~~~~~~~~~> Enter path to an installation: ");
+                        InstallDir = Console.ReadLine();
+                        if (InstallDir.StartsWith("\"") && InstallDir.EndsWith("\""))
+                        {
+                            InstallDir = InstallDir.Remove(0, 1);
+                            InstallDir = InstallDir.Remove(InstallDir.Length - 1, 1);
+                        }
+                        customInstallDir = Path.Combine(InstallDir, "Temmie Launcher");
+                        if (Directory.Exists(InstallDir) && TljsonWriter.checkIfInstallationExists(Path.Combine(TLFolder, "tl_config.json"), InstallDir) == true && !InstallDir.Contains("//"))
+                        {
+                            
+                            break;
+                        }
+                        else
+                        {
+                            Console.WriteLine(label_pathNotFound);
+                        }
+                    }
+                    Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Installation found!");
+                    Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Checking for updates!");
+
+                    string shaOfInstallation = TljsonWriter.getShaFromInstallation(Path.Combine(TLFolder, "tl_config.json"), Path.Combine(InstallDir, "Temmie Launcher")); 
+                    if (shaOfInstallation != latestcommitSha)
+                    {
+                        Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Update detected!");
+                        while (true)
+                        {
+                            Console.Write("\n~~~~~~~~~~~~~~~~~~~~> Do you wish to update? (Y/n): ");
+                            updateAnswer = Console.ReadLine();
+                            if (updateAnswer == "Y" || updateAnswer == "y")
+                            {
+                                Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Updating! Please wait...");
+                                if (File.Exists(Path.Combine(tempDownloadFolder, "fpPS4-Temmie-s-Launcher-main.zip")))
+                                {
+                                    File.Delete(Path.Combine(tempDownloadFolder, "fpPS4-Temmie-s-Launcher-main.zip"));
+                                }
+                                Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Downloading fpPS4-Temmie-s-Launcher-main! Please wait.");
+                                tlDownloader.downloadFromMain();
+                                Console.WriteLine(label_processComplete);
+                                Console.WriteLine(label_extractPleaseWait);
+                                extractor.ExtractZipContent(Path.Combine(tempDownloadFolder, "fpPS4-Temmie-s-Launcher-main.zip"), Path.Combine(tempDownloadFolder, "fpPS4-Temmie-s-Launcher-main"));
+                                Console.WriteLine(label_processComplete);
+                                Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Moving files");
+                                mover.Move_Files_And_Folders(Path.Combine(tempDownloadFolder, "fpPS4-Temmie-s-Launcher-main", "fpPS4-Temmie-s-Launcher-main"), Path.Combine(InstallDir));
+                                Directory.Delete(Path.Combine(tempDownloadFolder, "fpPS4-Temmie-s-Launcher-main", "fpPS4-Temmie-s-Launcher-main"));
+                                Directory.Delete(Path.Combine(tempDownloadFolder, "fpPS4-Temmie-s-Launcher-main"));
+                                TljsonWriter.changeLatestSha(Path.Combine(TLFolder, "tl_config.json"), Path.Combine(InstallDir, "Temmie Launcher"), latestcommitSha);
+                                break;
+                            }
+                            else if (updateAnswer == "N" || updateAnswer == "n")
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Invalid expression!");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> No updates found!");
+                        Console.Write(label_pressAnyKey);
+                        Console.ReadKey();
+                    }
                     Console.Clear();
-                    continue;
+                    //continue;
                 }
                 else if (operation == "3")
+                {
+                    Console.Clear();
+                    logos.Logo4();
+                    if (!File.Exists(Path.Combine(TLFolder, "tl_config.json")))
+                    {
+                        TljsonWriter.createTlJson(Path.Combine(TLFolder, "tl_config.json"), "", "");
+                    }
+                    while (true)
+                    {
+                        Console.Write("\n~~~~~~~~~~~~~~~~~~~~> Enter path to an installation: ");
+                        InstallDir = Console.ReadLine();
+                        if (InstallDir.StartsWith("\"") && InstallDir.EndsWith("\""))
+                        {
+                            InstallDir = InstallDir.Remove(0, 1);
+                            InstallDir = InstallDir.Remove(InstallDir.Length - 1, 1);
+                        }
+                        customInstallDir = Path.Combine(InstallDir, "Temmie Launcher");
+                        if (Directory.Exists(InstallDir) && !InstallDir.Contains("//"))
+                        {
+
+                            break;
+                        }
+                        else
+                        {
+                            Console.WriteLine(label_pathNotFound);
+                        }
+                    }
+                    TljsonWriter.addInstallationLog(Path.Combine(TLFolder, "tl_config.json"), InstallDir,"");
+                    Console.WriteLine("\n~~~~~~~~~~~~~~~~~~~~> Successfully added!");
+                    Console.Write(label_pressAnyKey);
+                    Console.ReadKey();
+                    Console.Clear();
+                }
+                else if (operation == "4")
                 {
                     Environment.Exit(0);
                 }
