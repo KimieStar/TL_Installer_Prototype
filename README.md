@@ -1,3 +1,6 @@
+# This App is at it's final version and it won't receive any more updates
+(This app will still receive support in fpPS4's discord dedicated text channel)
+
 # TL Installer (Prototype)
 A Temmie Launcher and fpPS4 installer in one made just for the funzies
 
@@ -13,18 +16,10 @@ A Temmie Launcher and fpPS4 installer in one made just for the funzies
 ### Automatic
 - After you choose 'Automatic Installation' wait for the app to do it's stuff (download the required files) after that the you will be prompted to choose where to install. You can choose either to enter nothing and just continue which will install everything in the Downloads folder. Or by choosing a path where to install it everything will be installed in the specified folder. Example of how the path should look like `"C:\Users\<Your Username>\Downloads\"`.
 
-### Manual
-- After you choose 'Manual Installation' you will be required to enter the path of every single file that is required. Example of how the path should look like `"C:\Users\<Your Username>\Downloads\fpPS4.zip"`.
-- After all the file paths are entered and the app has verified the files you will be prompted to choose choose where to install. You can choose either to enter nothing and just continue which will install everything in the Downloads folder. Or by choosing a path where to install it everything will be installed in the specified folder. Example of how the path should look like `"C:\Users\<Your Username>\Downloads\"`.
-
-#### P.S.
-You can find the files required for manual installation over here:
-- <a href="https://github.com/red-prig/fpPS4/actions">fpPS4</a>. (For more info on how to get the file check out this tutorial <a href="https://cdn.discordapp.com/attachments/1065639589231984681/1065643641269403699/How_to_Setup_fpPs4_emulator.docx">here</a>)
-- <a href="https://github.com/temmieheartz/fpPS4-Temmie-s-Launcher/releases/latest">Temmie Launcher from Release</a>.
-- <a href="https://github.com/temmieheartz/fpPS4-Temmie-s-Launcher/archive/refs/heads/main.zip">Temmie Launcher from Main</a>.
-
 ## Update
-- This operation is not yet implemented. Coming soon!
+- After you choose 'Update' you will be asked to enter a path of your 'Temmie Launcher' installation. It would look like something like this `"C:\Users\<Your Username>\Downloads\Temmie Launcher"`. Once you enter it the updater will check for any updates and if any are available it will update your 'Temmie Launcher'. 
+#### !!! AND DO REMEMBER THAT BEFORE UPDATING YOU MUST HAVE A PREVIOUS INSTALLATION OF 'Temmie Launcher'!!!
+#### !!! IF YOU HAVE AN OLD INSTALLATION (AN INSTALLATION THAT WAS MADE WITH THIS INSTALLER BEFORE THE FINAL VERSION) YOU MUST FIRST ADD THE OLD INSTALLATION BY GOING TO THE MAIN MENU OF THE INSTALLER AND CHOOSING 'Add old Installation'. 
 
 # Warning
 - If the app is not starting you may need to install <a href="https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-6.0.13-windows-x64-installer">.Net 6 Runtime</a>.
