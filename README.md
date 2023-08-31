@@ -1,5 +1,5 @@
 # This App is at it's final version and it won't receive any more updates
-(This app will still receive support in fpPS4's discord dedicated text channel)
+Have a problem or a question join this discord server and ask me :p https://discord.gg/V74EWXgxq
 
 # TL Installer (Prototype)
 A Temmie Launcher and fpPS4 installer in one made just for the funzies
